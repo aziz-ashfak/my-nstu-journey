@@ -21,6 +21,7 @@
 
   <div class="stage" id="stage" role="button" tabindex="0" aria-label="Story scene. Tap to go to the next scene.">
     <canvas id="cv" width="256" height="144"></canvas>
+    <video id="vid" controls playsinline preload="none" poster="docs/hero.png" hidden></video>
   </div>
 
   <section class="cap" aria-live="polite">
@@ -35,6 +36,7 @@
     <button id="bNext" type="button">NEXT &gt;</button>
     <button id="bAuto" type="button" aria-pressed="true">AUTO</button>
     <button id="bSound" type="button" aria-pressed="true">SOUND ON</button>
+    <button id="bVideo" type="button">WATCH VIDEO</button>
   </div>
   <div class="dots" id="dots"></div>
   <a class="dl" href="media/My_NSTU_Journey.mp4" download>DOWNLOAD THE VIDEO (MP4)</a>

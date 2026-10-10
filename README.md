@@ -79,6 +79,7 @@ It runs in any browser with its own chiptune soundtrack, and it renders to a 3½
 | Change speed | **1X** (cycles 1× → 2× → 0.5×) |
 | Auto-advance on/off | **AUTO** |
 | Sound on/off | **SOUND ON** |
+| Watch the finished video | **WATCH VIDEO** (plays the MP4 in your phone's own player) |
 | Jump to a chapter | The chapter strip under the controls |
 
 ## Project structure

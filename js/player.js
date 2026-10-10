@@ -5,10 +5,7 @@
    hundreds of live Web Audio notes. If the file cannot load, it falls back to live Web Audio. */
 const OFFS=[];SC.reduce((a,s,i)=>(OFFS[i]=a,a+s.d),0);
 const track=new Audio();track.preload='auto';track.setAttribute('playsinline','');track.src='media/soundtrack.mp3';
-let trackOK=true,unlocked=false;track.addEventListener('error',()=>{if(!track.src.startsWith('blob:'))trackOK=false;});
-// Load the whole file into memory so seeking works on any host and is instant on phones.
-if(!VIDEO&&window.fetch)fetch('media/soundtrack.mp3').then(r=>{if(!r.ok)throw 0;return r.blob();}).then(b=>{const t=track.currentTime;track.src=URL.createObjectURL(b);trackOK=true;
- track.addEventListener('loadedmetadata',()=>{try{track.currentTime=t;}catch(e){}},{once:true});}).catch(()=>{});
+let trackOK=true,unlocked=false;track.addEventListener('error',()=>{trackOK=false;if(unlocked&&soundOn){audioStart();audioScene(cur);}});
 function sndUnlock(){if(unlocked||!soundOn)return;unlocked=true;
  try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}   // iOS: play even with the silent switch on
  if(trackOK){const p=track.play();if(p&&p.catch)p.catch(()=>{trackOK=false;audioStart();audioScene(cur);});}else audioStart();}
@@ -35,7 +32,12 @@ function go(n){cur=(n+SC.length)%SC.length;st=0;shown=-1;playId++;$('chap').text
 function next(){if(!started){started=true;sndUnlock();go(1);return;}sndUnlock();go(cur+1);}
 function prev(){started=true;sndUnlock();go(cur-1);}
 $('bNext').onclick=next;$('bPrev').onclick=prev;
-$('stage').addEventListener('click',next);
+$('stage').addEventListener('click',e=>{if(!vid.hidden)return;next();});
+/* WATCH VIDEO: plays the finished MP4 in the phone's own video player (always has sound). */
+const vid=$('vid');
+$('bVideo').onclick=()=>{const show=vid.hidden;vid.hidden=!show;$('bVideo').textContent=show?'BACK TO STORY':'WATCH VIDEO';
+ if(show){if(!vid.getAttribute('src'))vid.src='media/My_NSTU_Journey.mp4';playing=false;$('bPlay').textContent='PLAY';sndPause();const p=vid.play();if(p&&p.catch)p.catch(()=>{});}
+ else vid.pause();};
 $('stage').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();next();}});
 $('bPlay').onclick=()=>{playing=!playing;$('bPlay').textContent=playing?'PAUSE':'PLAY';playing?sndResume():sndPause();};
 $('bSpeed').onclick=()=>{sp=(sp+1)%3;$('bSpeed').textContent=SPEEDS[sp]+'X';track.playbackRate=SPEEDS[sp];};
