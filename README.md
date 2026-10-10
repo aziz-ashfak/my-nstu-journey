@@ -63,7 +63,7 @@ It runs in any browser with its own chiptune soundtrack, and it renders to a 3½
 ## Features
 
 - **Hand-coded pixel art.** Every scene is drawn in code on a 256×144 canvas, scaled up crisp. There are no image sprites, apart from three portraits made from real photos.
-- **Original chiptune soundtrack.** Eight moods (hopeful, tense, sad, romantic, chill, driving, night, triumphant) composed live with the Web Audio API.
+- **Original chiptune soundtrack.** Eight moods (hopeful, tense, sad, romantic, chill, driving, night, triumphant) composed with the Web Audio API, pre-rendered to `media/soundtrack.mp3` and played in sync with the scenes, so it sounds clean on phones too (including iPhones with the silent switch on).
 - **Sound effects.** Monsoon rain, thunder, heartbeat, keyboard typing, sizzling dim bhuna, tea-stall chatter, crickets, camera shutters and a graduation crowd.
 - **Player controls.** Play/pause, speed (1×, 2×, 0.5×), auto-advance, sound on/off, a chapter strip, and keyboard shortcuts.
 - **Video export.** One script renders the whole story to a 1280×720 MP4 with stereo sound.
@@ -97,7 +97,8 @@ my-nstu-journey/
 │   └── player.js           Controls, chapter strip, captions, video export hooks
 ├── assets/img/             Pixel portraits (me, Kaiser, the defense photo)
 ├── media/
-│   └── My_NSTU_Journey.mp4 The rendered video
+│   ├── My_NSTU_Journey.mp4 The rendered video
+│   └── soundtrack.mp3      The soundtrack the site plays (synced to the scenes)
 ├── docs/                   README images
 ├── tools/
 │   └── render_video.py     Renders the story to MP4
@@ -138,7 +139,7 @@ python -m playwright install chromium
 python tools/render_video.py
 ```
 
-You also need [ffmpeg](https://ffmpeg.org/download.html) on your `PATH`. The script opens the page in a headless browser, records every frame at 30 fps, renders the soundtrack offline, and writes `media/My_NSTU_Journey.mp4`.
+You also need [ffmpeg](https://ffmpeg.org/download.html) on your `PATH`. The script opens the page in a headless browser, records every frame at 30 fps, renders the soundtrack offline, and writes `media/My_NSTU_Journey.mp4` and `media/soundtrack.mp3`. Always re-render after changing scene lengths or sounds, so the website's soundtrack stays in sync.
 
 | Option | Default | What it does |
 |--------|---------|--------------|

@@ -1,22 +1,48 @@
 /* Player: controls, chapter dots, captions, and the video export hooks. */
+/* ---------- sound playback ----------
+   The soundtrack is pre-rendered (media/soundtrack.mp3, made by tools/render_video.py) and played
+   as a normal audio file kept in sync with the scene clock. Phones play this reliably, unlike
+   hundreds of live Web Audio notes. If the file cannot load, it falls back to live Web Audio. */
+const OFFS=[];SC.reduce((a,s,i)=>(OFFS[i]=a,a+s.d),0);
+const track=new Audio();track.preload='auto';track.setAttribute('playsinline','');track.src='media/soundtrack.mp3';
+let trackOK=true,unlocked=false;track.addEventListener('error',()=>{if(!track.src.startsWith('blob:'))trackOK=false;});
+// Load the whole file into memory so seeking works on any host and is instant on phones.
+if(!VIDEO&&window.fetch)fetch('media/soundtrack.mp3').then(r=>{if(!r.ok)throw 0;return r.blob();}).then(b=>{const t=track.currentTime;track.src=URL.createObjectURL(b);trackOK=true;
+ track.addEventListener('loadedmetadata',()=>{try{track.currentTime=t;}catch(e){}},{once:true});}).catch(()=>{});
+function sndUnlock(){if(unlocked||!soundOn)return;unlocked=true;
+ try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}   // iOS: play even with the silent switch on
+ if(trackOK){const p=track.play();if(p&&p.catch)p.catch(()=>{trackOK=false;audioStart();audioScene(cur);});}else audioStart();}
+function sndWanted(){return soundOn&&unlocked&&playing&&started&&st<SC[cur].d;}
+function sndScene(i){if(!soundOn||!unlocked)return;
+ if(!trackOK){audioScene(i);return;}
+ const want=OFFS[i]+st;if(Math.abs(track.currentTime-want)>0.25){try{track.currentTime=want;}catch(e){}}track.playbackRate=SPEEDS[sp];if(sndWanted()){const p=track.play();if(p&&p.catch)p.catch(()=>{});}}
+function sndSync(){if(!trackOK||!unlocked)return;
+ if(!sndWanted()){if(!track.paused)track.pause();return;}
+ const want=OFFS[cur]+st;if(Math.abs(track.currentTime-want)>0.35){try{track.currentTime=want;}catch(e){}}
+ if(track.paused){const p=track.play();if(p&&p.catch)p.catch(()=>{});}}
+function sndPause(){if(trackOK)track.pause();else if(actx)actx.suspend();}
+function sndResume(){if(trackOK)sndSync();else if(actx)actx.resume();}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)sndPause();});
+
 /* ---------- player ---------- */
 let cur=0,st=0,playing=true,auto=true,started=false,sp=0,last=performance.now(),shown=-1;
 const SPEEDS=[1,2,0.5];
 const $=id=>document.getElementById(id);
 const dots=$('dots');
-SC.forEach((s,k)=>{const b=document.createElement('button');b.type='button';b.className='dot';b.setAttribute('aria-label','Go to '+s.ch.toLowerCase());b.addEventListener('click',()=>{started=true;audioStart();go(k);});dots.appendChild(b);});
+SC.forEach((s,k)=>{const b=document.createElement('button');b.type='button';b.className='dot';b.setAttribute('aria-label','Go to '+s.ch.toLowerCase());b.addEventListener('click',()=>{started=true;sndUnlock();go(k);});dots.appendChild(b);});
 function go(n){cur=(n+SC.length)%SC.length;st=0;shown=-1;playId++;$('chap').textContent=SC[cur].ch;$('tag').textContent=SC[cur].tag;
- [...dots.children].forEach((d,k)=>{d.className='dot'+(k===cur?' on':k<cur?' done':'');});$('bNext').textContent=cur===SC.length-1?'REPLAY':'NEXT >';audioScene(cur);}
-function next(){audioStart();if(!started){started=true;go(1);return;}go(cur+1);}
-function prev(){audioStart();started=true;go(cur-1);}
+ [...dots.children].forEach((d,k)=>{d.className='dot'+(k===cur?' on':k<cur?' done':'');});$('bNext').textContent=cur===SC.length-1?'REPLAY':'NEXT >';sndScene(cur);}
+function next(){if(!started){started=true;sndUnlock();go(1);return;}sndUnlock();go(cur+1);}
+function prev(){started=true;sndUnlock();go(cur-1);}
 $('bNext').onclick=next;$('bPrev').onclick=prev;
 $('stage').addEventListener('click',next);
 $('stage').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();next();}});
-$('bPlay').onclick=()=>{playing=!playing;$('bPlay').textContent=playing?'PAUSE':'PLAY';if(actx){playing?actx.resume():actx.suspend();}};
-$('bSpeed').onclick=()=>{sp=(sp+1)%3;$('bSpeed').textContent=SPEEDS[sp]+'X';};
+$('bPlay').onclick=()=>{playing=!playing;$('bPlay').textContent=playing?'PAUSE':'PLAY';playing?sndResume():sndPause();};
+$('bSpeed').onclick=()=>{sp=(sp+1)%3;$('bSpeed').textContent=SPEEDS[sp]+'X';track.playbackRate=SPEEDS[sp];};
 $('bAuto').onclick=()=>{auto=!auto;$('bAuto').setAttribute('aria-pressed',String(auto));};
 $('bSound').onclick=()=>{soundOn=!soundOn;$('bSound').textContent=soundOn?'SOUND ON':'SOUND OFF';$('bSound').setAttribute('aria-pressed',String(soundOn));
- if(soundOn){audioStart();if(amaster)amaster.gain.value=0.9;audioScene(cur);}else if(amaster)amaster.gain.value=0;};
+ if(soundOn){sndUnlock();if(trackOK){track.muted=false;sndScene(cur);}else{audioStart();if(amaster)amaster.gain.value=0.9;audioScene(cur);}}
+ else{track.pause();track.muted=true;if(amaster)amaster.gain.value=0;}};
 document.addEventListener('keydown',e=>{if(e.target.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))return;
  if(e.key==='ArrowRight'){next();}else if(e.key==='ArrowLeft'){prev();}else if(e.key===' '){e.preventDefault();$('bPlay').click();}});
 
@@ -25,6 +51,7 @@ function frame(now){const dt=Math.min(0.1,(now-last)/1000);last=now;if(playing)s
  drawScene(cur,st);
  const n=Math.min(SC[cur].cap.length,Math.floor(st*40));if(n!==shown){shown=n;$('txt').textContent=SC[cur].cap.slice(0,n);}
  if(auto&&started&&playing&&st>SC[cur].d&&cur<SC.length-1)go(cur+1);
+ if(!VIDEO)sndSync();
  requestAnimationFrame(frame);}
 
 /* ---------- video export hooks (used only to render the MP4) ---------- */

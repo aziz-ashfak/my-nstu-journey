@@ -1,4 +1,5 @@
-"""Render the story to an MP4 (1280x720, 30 fps, stereo sound).
+"""Render the story to an MP4 (1280x720, 30 fps, stereo sound), plus media/soundtrack.mp3,
+the audio file the website plays in sync with the scenes.
 
 Usage (from the project root):
     pip install playwright
@@ -72,8 +73,11 @@ def main():
         ff.wait()
         browser.close()
     httpd.shutdown()
+    # The website plays this file in sync with the scenes (reliable on phones).
+    track = os.path.join(ROOT, 'media', 'soundtrack.mp3')
+    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', wav, '-c:a', 'libmp3lame', '-b:a', '160k', track], check=True)
     os.remove(wav)
-    print('Saved', a.out)
+    print('Saved', a.out, 'and', track)
 
 
 if __name__ == '__main__':
