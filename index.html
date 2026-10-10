@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My NSTU Journey</title>
+<meta name="description" content="A pixel-art story of my journey at Noakhali Science and Technology University.">
+<meta name="theme-color" content="#0f0d17">
+<link rel="icon" href="assets/img/me.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>MY NSTU JOURNEY</h1>
+    <span class="sub">Noakhali Science and Technology University, in pixels</span>
+  </header>
+
+  <div class="stage" id="stage" role="button" tabindex="0" aria-label="Story scene. Tap to go to the next scene.">
+    <canvas id="cv" width="256" height="144"></canvas>
+  </div>
+
+  <section class="cap" aria-live="polite">
+    <div class="meta"><span class="chap" id="chap">PROLOGUE</span><span class="tag" id="tag">SONAPUR, NOAKHALI</span></div>
+    <p class="text"><span id="txt"></span><span class="cur" aria-hidden="true"></span></p>
+  </section>
+
+  <div class="ctrls">
+    <button id="bPrev" type="button">&lt; PREV</button>
+    <button id="bPlay" type="button">PAUSE</button>
+    <button id="bSpeed" type="button">1X</button>
+    <button id="bNext" type="button">NEXT &gt;</button>
+    <button id="bAuto" type="button" aria-pressed="true">AUTO</button>
+    <button id="bSound" type="button" aria-pressed="true">SOUND ON</button>
+  </div>
+  <div class="dots" id="dots"></div>
+  <a class="dl" href="media/My_NSTU_Journey.mp4" download>DOWNLOAD THE VIDEO (MP4)</a>
+  <p class="hint">Tap the picture or press the right arrow to move on. Space pauses.</p>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/scenery.js"></script>
+<script src="js/people.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/player.js"></script>
+</body>
+</html>
