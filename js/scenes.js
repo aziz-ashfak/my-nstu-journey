@@ -1,4 +1,4 @@
-/* Scenes: every chapter of the story (plus the Proshasonik Bhaban and statue drawings), and the SC list of durations and captions. */
+/* Scenes: every chapter of the story, the FRIENDS list, and the SC list of durations and captions. */
 /* ---------- scenes ---------- */
 function s0(t){sky(['#0f0d17','#141430','#1b1f3a','#262c56','#33406f'],112);stars(t,70,70);moon(222,20);
  const sil='#120f22';
@@ -11,22 +11,6 @@ function s0(t){sky(['#0f0d17','#141430','#1b1f3a','#262c56','#33406f'],112);star
  if(VIDEO)txt('A TRUE STORY',W/2,130,C.white,1,true);
  else if(RM||Math.floor(t*2)%2)txt('TAP TO BEGIN',W/2,130,C.white,1,true);}
 
-/* NSTU main gate, from the real photo */
-function nstuGate(t){sky(['#cfd8df','#dde4e8','#e8eef0'],96);clouds(t,14,'#f6f8f9',3,2,41);
- R(0,40,44,58,'#eceae4');for(let r=0;r<4;r++)for(let k=0;k<4;k++)R(4+k*10,46+r*12,6,6,'#3a4048');R(0,38,46,3,'#d8d6d0');
- for(let i=0;i<5;i++)tree(206+i*14,98,9+rnd(i+300)*4,t,['#2f6a34','#3f7a3e','#5a9a4a']);
- R(0,96,W,48,'#cfcabc');R(0,96,W,1,'#b8b2a2');
- const gate=(x0,w)=>{R(x0,66,w,1,'#c8ccd0');R(x0,78,w,1,'#c8ccd0');R(x0,94,w,1,'#c8ccd0');for(let x=x0;x<x0+w;x+=3)R(x,62,1,34,'#c0c4c8');
-  for(let a=0;a<2;a++){const cx=x0+w/4+a*w/2,r=Math.floor(w/4)-1;for(let k=0;k<=12;k++){const an=Math.PI*k/12;P(cx-Math.cos(an)*r,64-Math.sin(an)*8,'#aab0b6');}}};
- gate(8,58);gate(190,58);
- R(66,38,4,56,'#6f8fb0');R(186,38,4,56,'#6f8fb0');
- R(100,38,56,56,'#7e9cbc');R(108,52,40,42,'#f4f4f0');disc(128,52,20,'#f4f4f0');
- disc(128,48,4,'#2f6fb0');P(128,48,'#ffd36b');txt('NSTU',128,64,'#8a9098',2,true);
- const board=(x)=>{R(x-1,42,36,38,'#9a6a3a');R(x,43,34,36,'#1f3f8f');disc(x+17,48,3,'#d8dce6');txt('NOAKHALI',x+17,54,C.white,1,true);txt('SCIENCE',x+17,61,C.white,1,true);txt('AND TECH',x+17,67,C.white,1,true);txt('UNIV.',x+17,73,C.white,1,true);};
- R(70,38,30,56,'#8aa6c2');R(156,38,30,56,'#8aa6c2');board(68);board(154);
- R(60,26,136,3,'#eef0f0');R(56,29,144,7,'#d4d8d8');R(58,36,140,2,'#8f969a');
- R(62,94,132,3,'#9aa0a8');R(82,97,92,9,'#b0553a');R(84,97,88,7,'#4f8f3a');for(let i=0;i<40;i++)P(85+rnd(i+310)*86,97+rnd(i+311)*6,['#e04a5a','#ffd36b','#f28ab0'][i%3]);
- R(100,96,10,6,'#b0553a');R(146,96,10,6,'#b0553a');R(102,92,6,5,'#3f8a3a');R(148,92,6,5,'#3f8a3a');}
 function s1(t){if(t<4.2){nstuGate(t);const mx=t<3.4?-12+t*(100/3.4):88;person(mx,134,ME,t,{walk:t<3.4,papers:true,mood:'happy'});if(t>1.2)bubble('FIRST DAY AT NSTU!',Math.max(40,mx),104,C.sun);hud('DAY 1');return;}
  const u=t-4.2;sQueue(u);if(u<0.3){g.globalAlpha=1-u/0.3;R(0,0,W,H,'#000');g.globalAlpha=1;}}
 function sQueue(t){sky(['#4f9fd8','#6cb2e2','#8fc6ea','#b6dcef','#d6ebf1'],96);
@@ -258,32 +242,6 @@ function adminBldg(x,gy,w,h){R(x,gy-h,w,h,'#ece6d6');R(x-3,gy-h-3,w+6,3,'#3f6f8f
  R(cx-12,gy-20,24,20,'#3a3430');for(let i=0;i<4;i++)R(cx-11+i*7,gy-20,2,20,C.cream);
  const s='PROSHASONIK BHABAN',sw=s.length*4+5;box(cx-Math.round(sw/2),gy-31,sw,9,'#3f6f8f',C.white);txt(s,cx-Math.round(sw/2)+3,gy-29,C.white);
  R(x-6,gy-2,w+12,2,'#b5ad9c');}
-/* Proshasonik Bhaban, drawn from the real photo: cream 4-storey block, pilasters, dark window grids, roof blocks */
-function adminReal(gy){const top=gy-74;R(0,top,W,74,'#efe7d2');R(0,top,W,2,'#f7f1e2');
- const fh=17;for(let f=0;f<4;f++){const y=top+4+f*fh;R(0,y+fh-3,W,3,'#e2d8bf');R(0,y+fh-3,W,1,'#f8f2e4');}
- for(let px=-6;px<W;px+=30){
-  for(let f=0;f<4;f++){const y=top+5+f*fh;R(px+6,y,22,fh-8,'#1f2428');for(let m=px+9;m<px+28;m+=4)R(m,y,1,fh-8,'#3a4247');R(px+6,y+4,22,1,'#3a4247');P(px+7,y+1,'#55606a');}
-  R(px,top,6,74,'#f6efdd');R(px+5,top,1,74,'#d6cbb0');R(px+1,top-4,4,4,'#b9b4a8');R(px+1,top-4,4,1,'#cfcac0');}
- const ex=178;R(ex-2,gy-26,28,3,'#f6efdd');R(ex,gy-23,24,23,'#262a2e');R(ex+2,gy-21,20,21,'#30363b');
- const s='PROSHASONIK BHABAN',sw=s.length*4+5;box(ex+12-Math.round(sw/2),gy-36,sw,9,'#f8f2e4','#2a2a2a');txt(s,ex+12-Math.round(sw/2)+3,gy-34,'#2a2a2a');
- R(0,gy-2,W,2,'#cfc6ae');}
-function statue(x,gy){const st='#ecece6',sh='#b4b5ae',dk='#8e8f88';
- R(x-30,gy-3,60,4,'#4a4c48');R(x-34,gy,68,3,'#d8d8d2');
- R(x-20,gy-23,40,20,'#f2f2ee');R(x-20,gy-23,40,2,'#d8d8d2');R(x+16,gy-23,4,20,'#dcdcd6');R(x-9,gy-18,18,11,'#c97a32');R(x-8,gy-17,16,9,'#b5652a');R(x-5,gy-15,3,5,'#d68a44');R(x+1,gy-14,4,4,'#d68a44');
- const o='#6a6b65';[[1,0],[-1,0],[0,1],[0,-1]].forEach(([a,b])=>statueFig(x+a,gy+b,o,o,o));statueFig(x,gy,st,sh,dk);}
-function statueFig(x,gy,st,sh,dk){
- // flag bearer with raised fist
- line(x-15,gy-30,x-15,gy-72,dk);line(x-14,gy-30,x-14,gy-72,sh);
- for(let k=0;k<11;k++){const w=13-Math.floor(k/2);R(x-13,gy-72+k,w,1,k===5?sh:st);}
- R(x-11,gy-36,3,13,st);R(x-7,gy-36,3,13,sh);R(x-12,gy-48,9,12,st);R(x-5,gy-48,2,12,sh);R(x-11,gy-41,8,2,sh);
- R(x-10,gy-54,5,6,st);R(x-6,gy-54,1,6,sh);R(x-10,gy-55,5,1,dk);
- R(x-14,gy-47,2,9,st);R(x-4,gy-62,2,14,st);R(x-5,gy-65,4,4,st);P(x-3,gy-64,sh);
- // rifle bearer
- R(x+4,gy-36,3,13,st);R(x+8,gy-36,3,13,sh);R(x+3,gy-48,9,12,st);R(x+10,gy-48,2,12,sh);R(x+3,gy-41,9,2,sh);
- R(x+5,gy-54,5,6,st);R(x+9,gy-54,1,6,sh);R(x+5,gy-55,5,1,dk);
- line(x+1,gy-33,x+19,gy-58,dk);line(x+2,gy-33,x+20,gy-58,st);R(x+11,gy-46,5,2,st);R(x+1,gy-40,4,2,st);}
-function flowers(y0,h,t){R(0,y0,W,h,'#5f8f3a');for(let i=0;i<120;i++){const x=rnd(i+200)*W,y=y0+rnd(i+201)*h;P(x,y,i%3?'#f2d43a':'#e8c02a');if(i%4===0)P(x,y+1,'#4a7a2e');}}
-function flag(x,top,gy,t){R(x,top,1,gy-top,'#d8d8d8');P(x,top-1,C.sun);for(let c=0;c<18;c++){const dy=RM?0:Math.round(Math.sin(t*4-c*0.5));R(x+1+c,top+1+dy,1,11,'#006a4e');}const dy=RM?0:Math.round(Math.sin(t*4-8*0.5));disc(x+9,top+6+dy,3,'#f42a41');}
 function polaroid(px,py,src=imMe,iw=40,ih=48,label='BY KAISER'){const w=iw+6,h=ih+10;R(px+2,py+2,w,h,'#00000044');R(px,py,w,h,'#fbf8f0');R(px+2,py+2,iw+2,ih+2,'#222');if(src&&(src.width||src.naturalWidth))g.drawImage(src,px+3,py+3,iw,ih);txt(label,px+w/2,py+ih+4,'#555',1,true);}
 let playId=0;const snaps={};
 function snap(key,sx,sy,w,h){const k=key+':'+playId;if(snaps[key]&&snaps[key].k===k)return snaps[key].c;const c=document.createElement('canvas');c.width=w;c.height=h;const cg=c.getContext('2d');cg.imageSmoothingEnabled=false;cg.drawImage(cv,sx,sy,w,h,0,0,w,h);snaps[key]={k,c};return c;}
